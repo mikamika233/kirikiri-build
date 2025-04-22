@@ -40,8 +40,26 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt update
-          sudo apt install -y python2 make wget git cmake build-essential python2 unzip p7zip-full
+          sudo apt install -y python2 make wget git cmake build-essential python2 unzip p7zip-full tar libssl-dev zlib1g-dev libbz2-dev \
+            libreadline-dev libsqlite3-dev llvm libncurses5-dev libncursesw5-dev \
+            xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git
 
+       # Download and install Python 2.7.18
+      - name: Install Python 2.7.18
+        run: |
+          wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+          tar -xvzf Python-2.7.18.tgz
+          cd Python-2.7.18
+          ./configure --prefix=/usr/local
+          make
+          sudo make install
+
+      # Configure Python 2 path and environment variable
+      - name: Configure Python 2 environment
+        run: |
+          echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc
+          source ~/.bashrc
+          python2 --version  
 
       - name: Fetch third-party dependencies
         run: |
