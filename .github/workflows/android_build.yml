@@ -23,19 +23,16 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Download Android SDK commandline-tools
-        run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          cd $ANDROID_HOME/cmdline-tools
-          curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          unzip sdk.zip -d latest
-          rm sdk.zip
-
       - name: Install SDK and NDK
         run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME \
-            "platform-tools" "platforms;android-21" "build-tools;34.0.0" \
-            "cmake;3.22.1" "ndk;$NDK_VERSION"
+          wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+          unzip commandlinetools-linux-7583922_latest.zip -d $HOME/android-sdk
+          mkdir -p $HOME/android-sdk/cmdline-tools/latest
+          mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
+          echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-21"
+          echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "ndk;25.2.9519653"
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 
       - name: Set up environment paths
         run: |
@@ -59,6 +56,13 @@ jobs:
           cd script
           bash -c "export SKIP_PORTS= && ./cross_androida64.sh"
 
+      - name: Set up Gradle wrapper
+        run: |
+          wget https://services.gradle.org/distributions/gradle-7.4-bin.zip
+          unzip gradle-7.4-bin.zip
+          export GRADLE_HOME=$(pwd)/gradle-7.4
+          export PATH=$GRADLE_HOME/bin:$PATH
+    
       - name: Build APK with Gradle
         run: |
           cd project/android
