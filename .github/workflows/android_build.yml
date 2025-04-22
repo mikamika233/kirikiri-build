@@ -65,7 +65,7 @@ jobs:
           ./gradlew assembleDebug
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kirikiroid2yuri-apk
           path: project/android/app/build/outputs/apk/debug/app-debug.apk
