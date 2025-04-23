@@ -14,7 +14,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'  # 设置 Flutter 的版本，修改为你项目需要的版本
+          channel: stable  # 设置 Flutter 的版本，修改为你项目需要的版本
 
       - name: Set up Android SDK
         run: |
