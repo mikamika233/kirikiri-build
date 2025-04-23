@@ -24,7 +24,18 @@ jobs:
           unzip android-tools.zip -d $HOME/Android
           yes | $HOME/Android/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android --licenses
           $HOME/Android/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android "platform-tools" "build-tools;30.0.3" "platforms;android-30"
-
+          
+      - name: Set up signing
+        run: |
+          cd Local-Diffusion/android/app && rm build.gradle && wget https://github.com/mikamika233/kirikiri-build/releases/download/test/build.gradle
+          # 解码密钥库文件并存储到文件中
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > $HOME/keystore.jks
+          
+          # 设置环境变量供 Gradle 使用
+          echo "KEYSTORE_FILE=$HOME/keystore.jks" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
