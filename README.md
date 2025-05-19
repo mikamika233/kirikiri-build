@@ -1,1 +1,1 @@
-# kirikiri-build
+# localdiffusion-build
